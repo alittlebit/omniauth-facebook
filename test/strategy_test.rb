@@ -25,11 +25,11 @@ end
 
 class ClientTest < StrategyTestCase
   test 'has correct Facebook site' do
-    assert_equal 'https://graph.facebook.com/v4.0', strategy.client.site
+    assert_equal "https://graph.facebook.com/#{@facebook_api_version}", strategy.client.site
   end
 
   test 'has correct authorize url' do
-    assert_equal 'https://www.facebook.com/v4.0/dialog/oauth', strategy.client.options[:authorize_url]
+    assert_equal "https://www.facebook.com/#{@facebook_api_version}/dialog/oauth", strategy.client.options[:authorize_url]
   end
 
   test 'has correct token url with versioning' do
@@ -117,12 +117,27 @@ class InfoTest < StrategyTestCase
     @access_token.stubs(:token).returns('test_access_token')
   end
 
-  test 'returns the secure facebook avatar url when `secure_image_url` option is specified' do
+  test 'returns the secure facebook avatar url when `secure_image_url` option is set to true' do
     @options = { secure_image_url: true }
     raw_info = { 'name' => 'Fred Smith', 'id' => '321' }
     strategy.stubs(:raw_info).returns(raw_info)
     strategy.stubs(:access_token).returns(@access_token)
-    assert_equal 'https://graph.facebook.com/v4.0/321/picture?access_token=test_access_token', strategy.info['image']
+    assert_equal "https://graph.facebook.com/#{@facebook_api_version}/321/picture?access_token=test_access_token", strategy.info['image']
+  end
+
+  test 'returns the non-ssl facebook avatar url when `secure_image_url` option is set to false' do
+    @options = { secure_image_url: false }
+    raw_info = { 'name' => 'Fred Smith', 'id' => '321' }
+    strategy.stubs(:raw_info).returns(raw_info)
+    strategy.stubs(:access_token).returns(@access_token)
+    assert_equal "http://graph.facebook.com/#{@facebook_api_version}/321/picture?access_token=test_access_token", strategy.info['image']
+  end
+
+  test 'returns the secure facebook avatar url when `secure_image_url` option is omitted' do
+    raw_info = { 'name' => 'Fred Smith', 'id' => '321' }
+    strategy.stubs(:raw_info).returns(raw_info)
+    strategy.stubs(:access_token).returns(@access_token)
+    assert_equal "https://graph.facebook.com/#{@facebook_api_version}/321/picture?access_token=test_access_token", strategy.info['image']
   end
 
   test 'returns the image_url based of the client site' do
@@ -138,7 +153,7 @@ class InfoTest < StrategyTestCase
     raw_info = { 'name' => 'Fred Smith', 'id' => '321' }
     strategy.stubs(:raw_info).returns(raw_info)
     strategy.stubs(:access_token).returns(@access_token)
-    assert_equal 'http://graph.facebook.com/v4.0/321/picture?access_token=test_access_token&type=normal', strategy.info['image']
+    assert_equal "https://graph.facebook.com/#{@facebook_api_version}/321/picture?access_token=test_access_token&type=normal", strategy.info['image']
   end
 
   test 'returns the image with size specified as a symbol in the `image_size` option' do
@@ -146,7 +161,7 @@ class InfoTest < StrategyTestCase
     raw_info = { 'name' => 'Fred Smith', 'id' => '321' }
     strategy.stubs(:raw_info).returns(raw_info)
     strategy.stubs(:access_token).returns(@access_token)
-    assert_equal 'http://graph.facebook.com/v4.0/321/picture?access_token=test_access_token&type=normal', strategy.info['image']
+    assert_equal "https://graph.facebook.com/#{@facebook_api_version}/321/picture?access_token=test_access_token&type=normal", strategy.info['image']
   end
 
   test 'returns the image with width and height specified in the `image_size` option' do
@@ -156,7 +171,7 @@ class InfoTest < StrategyTestCase
     strategy.stubs(:access_token).returns(@access_token)
     assert_match 'width=123', strategy.info['image']
     assert_match 'height=987', strategy.info['image']
-    assert_match 'http://graph.facebook.com/v4.0/321/picture?access_token=test_access_token', strategy.info['image']
+    assert_match "https://graph.facebook.com/#{@facebook_api_version}/321/picture?access_token=test_access_token", strategy.info['image']
   end
 end
 
@@ -207,7 +222,7 @@ class InfoTestOptionalDataPresent < StrategyTestCase
 
   test 'returns the facebook avatar url' do
     @raw_info['id'] = '321'
-    assert_equal 'http://graph.facebook.com/v4.0/321/picture?access_token=test_access_token', strategy.info['image']
+    assert_equal "https://graph.facebook.com/#{@facebook_api_version}/321/picture?access_token=test_access_token", strategy.info['image']
   end
 
   test 'returns the Facebook link as the Facebook url' do
@@ -293,7 +308,7 @@ class RawInfoTest < StrategyTestCase
     @options = {appsecret_proof: @appsecret_proof, fields: 'name,email'}
   end
 
-  test 'performs a GET to https://graph.facebook.com/v4.0/me' do
+  test "performs a GET to https://graph.facebook.com/#{@facebook_api_version}/me" do
     strategy.stubs(:appsecret_proof).returns(@appsecret_proof)
     strategy.stubs(:access_token).returns(@access_token)
     params = {params: @options}
@@ -301,7 +316,7 @@ class RawInfoTest < StrategyTestCase
     strategy.raw_info
   end
 
-  test 'performs a GET to https://graph.facebook.com/v4.0/me with locale' do
+  test "performs a GET to https://graph.facebook.com/#{@facebook_api_version}/me with locale" do
     @options.merge!({ locale: 'cs_CZ' })
     strategy.stubs(:access_token).returns(@access_token)
     strategy.stubs(:appsecret_proof).returns(@appsecret_proof)
@@ -310,7 +325,7 @@ class RawInfoTest < StrategyTestCase
     strategy.raw_info
   end
 
-  test 'performs a GET to https://graph.facebook.com/v4.0/me with info_fields' do
+  test "performs a GET to https://graph.facebook.com/#{@facebook_api_version}/me with info_fields" do
     @options.merge!({info_fields: 'about'})
     strategy.stubs(:access_token).returns(@access_token)
     strategy.stubs(:appsecret_proof).returns(@appsecret_proof)
@@ -319,7 +334,7 @@ class RawInfoTest < StrategyTestCase
     strategy.raw_info
   end
 
-  test 'performs a GET to https://graph.facebook.com/v4.0/me with default info_fields' do
+  test "performs a GET to https://graph.facebook.com/#{@facebook_api_version}/me with default info_fields" do
     strategy.stubs(:access_token).returns(@access_token)
     strategy.stubs(:appsecret_proof).returns(@appsecret_proof)
     params = {params: {appsecret_proof: @appsecret_proof, fields: 'name,email'}}

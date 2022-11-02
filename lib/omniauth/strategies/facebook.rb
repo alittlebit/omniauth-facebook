@@ -12,10 +12,11 @@ module OmniAuth
       class AppIdMismatchError < StandardError; end
 
       DEFAULT_SCOPE = 'email'
+      DEFAULT_FACEBOOK_API_VERSION = 'v5.0'.freeze
 
       option :client_options, {
-        site: 'https://graph.facebook.com/v4.0',
-        authorize_url: "https://www.facebook.com/v4.0/dialog/oauth",
+        site: "https://graph.facebook.com/#{DEFAULT_FACEBOOK_API_VERSION}",
+        authorize_url: "https://www.facebook.com/#{DEFAULT_FACEBOOK_API_VERSION}/dialog/oauth",
         token_url: 'oauth/access_token'
       }
 
@@ -27,6 +28,8 @@ module OmniAuth
       option :authorization_code_from_signed_request_in_cookie, nil
 
       option :authorize_options, [:scope, :display, :auth_type]
+
+      option :secure_image_url, true
 
       uid { raw_info['id'] }
 
