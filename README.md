@@ -1,3 +1,15 @@
+**THIS IS A FORK NEEDED TO RESOLVE AN ISSUE RELATED TO THE AUTHENTICATION ON MOBILE DEVISE THAT CURRENTLY ARE NOT WORKING. MORE INFO IN THE DISCUSSION BELOW**
+https://github.com/simi/omniauth-facebook/issues/321
+https://github.com/simi/omniauth-facebook/pull/315
+
+**CODE WAS TAKEN FROM REPO BELOW AND REFERENCED IN THE FOLLOWING COMMENTS**
+https://github.com/dvkch/omniauth-facebook/tree/allow-verified-access-token
+https://github.com/simi/omniauth-facebook/pull/315#issuecomment-714392037
+
+**AND ALIGN WITH ORIGINAL REPO TO VERSION 9.0**
+https://github.com/simi/omniauth-facebook
+
+
 # OmniAuth Facebook &nbsp;[![Build Status](https://secure.travis-ci.org/simi/omniauth-facebook.svg?branch=master)](https://travis-ci.org/simi/omniauth-facebook) [![Gem Version](https://img.shields.io/gem/v/omniauth-facebook.svg)](https://rubygems.org/gems/omniauth-facebook)
 
 📣 **NOTICE** We’re looking for maintainers to help keep this project up-to-date. If you are interested in helping please open an Issue expressing your interest. Thanks! 📣
